@@ -1,0 +1,21 @@
+---
+
+- name: Remover backups antigos
+  hosts: tb-b5-ambevzbxapp2
+  tasks:
+
+  - name: Listando backup antigos
+    find:
+      paths: "/backup/"
+      file_type: file
+      age: "2d"
+      patterns: '*.gz'
+    register: files_2days
+
+  - name: Removendo backup antigos
+    file:
+      path: "{{ item.path }}"
+      state: absent
+    with_items:
+        - "{{ files_2days.files }}"
+

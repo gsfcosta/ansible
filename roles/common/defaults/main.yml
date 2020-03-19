@@ -1,0 +1,9 @@
+---
+
+common_packages_redhat:
+        - vim
+        - "Development Tools"
+        - net-tools
+        - tcpdump
+        - wget
+        - zip

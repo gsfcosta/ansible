@@ -1,0 +1,9 @@
+------------------------------------------------------------
+		       SEJA BEM VINDO!
+			COMPASSO UOL
+
+HOSTNAME: "{{ ansible_hostname }}"
+IP ADDRESS: "{{ ansible_default_ipv4 }}"
+DISTRIBUICAO: "{{ ansible_distribution }}"
+
+------------------------------------------------------------

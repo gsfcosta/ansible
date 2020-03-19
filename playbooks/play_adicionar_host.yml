@@ -1,0 +1,15 @@
+---
+- name: Adicionando macros aos hosts do arquivo /tmp/arquivo.csv
+  hosts: rundeck
+  tasks:
+ 
+  - name: Criando macros no host teste10
+    local_action:
+        module: zabbix_hostmacro
+        server_url: http://172.17.27.23:8080
+        login_user: svcacc_ansible
+        login_password: sun123*compasso
+        host_name: teste10
+        macro_name: PORT
+        macro_value: 162
+        state: present

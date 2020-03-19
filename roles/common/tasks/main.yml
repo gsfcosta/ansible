@@ -1,0 +1,81 @@
+---
+#--- Configura~ções Gerais ---#
+
+ - name: Alteracao do /etc/profile
+   lineinfile: dest=/etc/profile line={{ item }}
+   with_items:
+     - '#--- Variaveis e Alias Customizadas ---#'
+     - 'export HISTTIMEFORMAT="%d/%m/%Y - %H:%M:%S - "'
+     - 'export HISTSIZE="5000"'
+     - 'export HISTFILESIZE="5000"'
+     - 'alias ls="ls -lh --color"'
+     - 'alias grep="grep -i --color"'
+     - 'alias vi="vim"'
+     - 'alias rm="rm -i"'
+
+ - name: Desabilitando SELINUX permanentemente
+   replace:
+     dest: /etc/selinux/config
+     regexp: 'SELINUX=enforcing'
+     replace: 'SELINUX=disabled'
+   when: ansible_distryyibution == 'CentOS' or ansible_distribution == 'RedHat'
+          
+
+ - name: Desabilitando SELINUX temporariamente
+   shell: setenforce 0
+   when: ansible_distryyibution == 'CentOS' or ansible_distribution == 'RedHat'
+
+#--- Gerenciamento de pacotes e atualização do Sistema Operacional
+
+ - name: Instalação do repositório epel-release
+   yum: name=epel-release state=latest
+   when: ansible_distryyibution == 'CentOS' or ansible_distribution == 'RedHat'
+
+ - name: Atualização do Sistema Operacional
+   yum: name=* state=latest update_cache=yes
+   when: ansible_distryyibution == 'CentOS' or ansible_distribution == 'RedHat'
+
+ - name: Instalação de pacotes RedHat/CentOS
+   yum: name={{common_packages_redhat}} state=latest
+   when: ansible_distryyibution == 'CentOS' or ansible_distribution == 'RedHat'
+
+#--- Gerenciamento de usuários ---#
+
+ - name: Criando grupo automacao
+   group:
+     name=automacao
+     state=present
+
+ - name: Criando usuario svcacc_ansible
+   user:
+     name=svcacc_ansible
+     comment="Usuario de acesso ansible"
+     shell="/bin/bash"
+     home="/home/svcacc_ansible"
+     groups=automacao
+     password="9672b10d5c0f6d8ed5e3a162198118ea"
+     append=yes
+     expires=-1
+     state=present
+
+ - name: Adicionando grupo ao arquivo /etc/sudoers
+   lineinfile:
+           path: /etc/sudoers
+           state: present
+           regexp: '^%automacao'
+           line: '%automacao ALL=(ALL) NOPASSWD: ALL'
+           validate: '/usr/sbin/visudo -cf %s'
+
+#--- Configurando SSH---#
+
+ - name: Configurando o banner de acesso SSH
+   lineinfile:
+     dest=/etc/ssh/sshd_config
+     state=present
+     regexp='#Banner none'
+     line='Banner /etc/ssh/banner_ssh'
+
+ - name: Adicionando o motd
+   template: src=motd dest=/etc/motd force=yes owner=root group=root mode=0755
+   notify:
+     - Restart SSH
