@@ -1,0 +1,11 @@
+---
+# task file for sqlite3
+
+- name: Importando schema
+  become: true
+  become_method: sudo
+  shell: zcat {{ datafiles_path }}/schema.sql.gz | sqlite3 {{ zabbix_proxy_dbname }}
+  args:
+    creates: "{{ zabbix_proxy_dbname }}"
+    executable: /bin/bash
+

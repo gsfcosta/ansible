@@ -59,7 +59,7 @@ while (( $INDICE != $INDICE_TOTAL)); do
 	echo "              port: ${PORTA[$INDICE]}" >> $PLAYBOOK
 	echo "        proxy: ${PROXY[$INDICE]}" >> $PLAYBOOK
 
-	ansible-playbook $PLAYBOOK
+	ansible-playbook -i $INVENTORY_HOST $PLAYBOOK
 
 	IFS=';' read -r -a TOTAL_LINE <<< "${TOTAL[$INDICE]}"
 	IND_TOTAL_LINE=${#TOTAL_LINE[@]}
@@ -102,13 +102,13 @@ while (( $INDICE != $INDICE_SUB )); do
 		echo "        macro_value: ${MACRO_VALUE[$INDICE2]}" >> $PLAYBOOK
 		echo "        state: present" >> $PLAYBOOK
 		
-		ansible-playbook $PLAYBOOK
+		ansible-playbook -i $INVENTORY_HOST $PLAYBOOK
 
 		MACRO2
 	fi
 	echo "        state: present" >> $PLAYBOOK
 
-	ansible-playbook $PLAYBOOK
+	ansible-playbook -i $INVENTORY_HOST $PLAYBOOK
 
 	let INDICE=($INDICE+1)
 	ADDHOST
@@ -140,7 +140,7 @@ while (( $INDICE2 != $IND_NAME )); do
 	fi
 	echo "        state: present" >> $PLAYBOOK
 
-	ansible-playbook $PLAYBOOK
+	ansible-playbook -i $INVENTORY_HOST $PLAYBOOK
 
 	let INDICE2=($INDICE2+1)
 done
@@ -153,6 +153,7 @@ exit 0
 
 PLAYBOOK="/etc/ansible/playbooks/play_adicionar_host.yml"
 PASTA_TEMP="/tmp"
+INVENTORY_HOST="/etc/ansible/hosts"
 
 # VÁRIAVEIS ZABBIX
 
@@ -162,10 +163,10 @@ PASTA_TEMP="/tmp"
 DEFAULT=1 #1 - SIM $0 - NÃO
 INVENTARIO="disabled" #automatic #manual #disabled
 STATUS="enabled" #enabled #disabled
-URL="http://172.17.27.23:8080" #URL Zabbix
+URL="http://35.247.252.248" #URL Zabbix
 USERNAME="svcacc_ansible"
 PASSWORD="sun123*compasso"
-ANSIBLE_HOSTS="rundeck"
+ANSIBLE_HOSTS="cliente"
 ARQUIVO="/tmp/arquivo.csv"
 
 ##################################################################################

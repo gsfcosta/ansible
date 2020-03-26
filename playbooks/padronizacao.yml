@@ -1,0 +1,6 @@
+---
+
+ - name: Playbook final
+   hosts: all
+   roles:
+     - common

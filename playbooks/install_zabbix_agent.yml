@@ -1,0 +1,8 @@
+---
+
+ - name: Instalando zabbix-agent
+   hosts: agent
+   become_method: sudo
+   become: true
+   roles:
+           - { role: zabbix-agent }

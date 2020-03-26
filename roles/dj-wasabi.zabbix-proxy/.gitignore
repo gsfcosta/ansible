@@ -1,8 +1,0 @@
-.kitchen/
-.kitchen.local.yml
-.idea
-.cache
-.molecule
-__pycache__
-requirements.txt
-.vscode/

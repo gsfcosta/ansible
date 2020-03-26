@@ -1,0 +1,10 @@
+---
+# tasks file for zabbix-agent
+  - stat: path=/usr/sbin/zabbix_agentd
+    register: zabbix_agent_installed
+
+  - include: install.yml
+    when: not zabbix_agent_installed.stat.exists
+
+  - include: configure.yml
+

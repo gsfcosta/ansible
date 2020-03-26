@@ -1,0 +1,17 @@
+---
+ - name: Fazendo backup de arquivo original
+   shell: cp /etc/zabbix/zabbix_agentd.conf /etc/zabbix/zabbix_agentd.conf.old
+   
+ - name: Alterando arquivo de configuraçao 
+   lineinfile: 
+     dest=/etc/zabbix/zabbix_agentd.conf
+     state=present
+     regexp={{ item.regexp }}
+     line={{ item.line }}
+   with_items:
+      - { regexp: 'ServerActive=127.0.0.1', line: 'ServerActive={{zabbix_agent_server}}'}
+      - { regexp: 'Server=127.0.0.1', line: 'Server={{zabbix_agent_server}}'}
+      - { regexp: 'Hostname=Zabbix server', line: 'Hostname={{ ansible_hostname }}'}
+      - { regexp: '# EnableRemoteCommands=0', line: 'EnableRemoteCommands=1'}
+      - { regexp: '# ListenPort=10050', line: 'ListenPort={{zabbix_agent_port}}'}
+   notify: restart zabbix-agent

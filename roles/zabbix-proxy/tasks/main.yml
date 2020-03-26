@@ -1,0 +1,34 @@
+---
+# tasks file for zabbix-proxy
+  - stat: path=/usr/sbin/zabbix_proxy
+    register: zabbix_proxy_installed
+
+  - name: Instalando Epel-release
+    yum: name=epel-release state=latest
+
+  - name: Atualizaçao do SO
+    yum: name=* state=latest update_cache=yes
+
+  - name: Instalando dependencias
+    yum: name={{dependencias}} state=latest
+
+  - include: install.yml
+    when: not zabbix_proxy_installed.stat.exists
+
+  - include: sqlite3.yml
+
+  - include: selinux.yml
+    when: ansible_selinux.status == "enabled"
+
+  - name: Fazendo backup
+    shell: mv /etc/zabbix/zabbix_proxy.conf /etc/zabbix/zabbix_proxy.conf.bkp
+
+  - name: Configurando zabbix proxy
+    template:
+      src: zabbix_proxy.conf.j2
+      dest: /etc/zabbix/zabbix_proxy.conf
+      owner: zabbix
+      group: zabbix
+      mode: 0644
+    notify: restart zabbix-proxy
+

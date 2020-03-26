@@ -1,0 +1,5 @@
+---
+zabbix_agent_server: 10.160.4.97
+zabbix_agent_port: 10050
+zabbix_agent_hostname: "{{ inventory_hostname }}"
+

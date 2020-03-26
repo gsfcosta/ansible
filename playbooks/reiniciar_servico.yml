@@ -1,0 +1,7 @@
+---
+ - name: Reiniciar container
+   hosts: container
+   tasks:
+
+   - name: Reiniciando Container
+     shell: docker restart "{{ container_name }}"

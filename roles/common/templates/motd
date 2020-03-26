@@ -1,6 +1,6 @@
 ------------------------------------------------------------
 		       SEJA BEM VINDO!
-			COMPASSO UOL
+			  COMPASSO
 
 HOSTNAME: "{{ ansible_hostname }}"
 IP ADDRESS: "{{ ansible_default_ipv4 }}"

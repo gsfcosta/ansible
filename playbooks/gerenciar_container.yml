@@ -1,0 +1,9 @@
+---
+ - name: Reiniciar container
+   hosts: container
+   become_method: sudo
+   become: true
+   tasks:
+
+   - name: Reiniciando Container
+     shell: docker "{{ container_type }}" "{{ container_name }}"

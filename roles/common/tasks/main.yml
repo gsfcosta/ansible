@@ -48,15 +48,15 @@
 
  - name: Criando usuario svcacc_ansible
    user:
-     name=svcacc_ansible
-     comment="Usuario de acesso ansible"
-     shell="/bin/bash"
-     home="/home/svcacc_ansible"
-     groups=automacao
-     password="9672b10d5c0f6d8ed5e3a162198118ea"
-     append=yes
-     expires=-1
-     state=present
+     name: svcacc_ansible
+     comment: "Usuario de acesso ansible"
+     shell: /bin/bash
+     home=: /home/svcacc_ansible
+     groups: automacao
+     password: "{{ 'svcacc_ansible' | password_hash('sha512') }}"
+     append: yes
+     expires: -1
+     state: present
 
  - name: Adicionando grupo ao arquivo /etc/sudoers
    lineinfile:
@@ -75,7 +75,57 @@
      regexp='#Banner none'
      line='Banner /etc/ssh/banner_ssh'
 
+ - name: Copiando banner de acesso SSH
+   copy:
+     src=banner_ssh
+     dest=/etc/ssh/banner_ssh
+     owner=root
+     group=root
+     mode=0755
+     
  - name: Adicionando o motd
    template: src=motd dest=/etc/motd force=yes owner=root group=root mode=0755
    notify:
      - Restart SSH
+
+#--- Configurando chave rundeck ---#
+
+ - name: Criando usuario rundeck
+   user:
+     name: rundeck
+     comment: "Usuario de acesso rundeck"
+     shell: /bin/bash
+     home=: /home/rundeck
+     groups: automacao
+     password: "{{ 'svcacc_rundeck' | password_hash('sha512') }}"
+     append: yes
+     expires: -1
+     state: present
+
+ - name: Criando diretorio SSH
+   file:
+     path=/home/rundeck/.ssh
+     owner=rundeck
+     group=automacao
+     mode=0755
+     state=directory
+
+ - name: Verificando authorized_keys
+   stat: path=/home/rundeck/.ssh/authorized_keys
+   register: file_exist
+
+ - name: Copiando chave
+   copy:
+     src=authorized_keys
+     dest=/home/rundeck/.ssh/authorized_keys
+     owner=rundeck
+     group=automacao
+     mode=0755
+   when: file_exist.stat.exists == False
+
+ - name: Copiando chave
+   lineinfile:
+     dest=/home/rundeck/.ssh/authorized_keys
+     line='ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVssdriUcvWgdSm2gLp3302/Yog8ooQ0EbBOu2eTa6jwzxCxfSnsmwEgO8puHavXDuNLxp/0iR0Ri1mFCvKsXI8w8AccUJwZCAZtUVlkFVPtQYwSYpdPjWygfY9FP51FZu6EGkSneBhCtfXsd7mcBbcK1Ewp+kiprGk+exbeRaFRum1xNtK4YXpqEsK3LHTtkWePhSPn9/+Ns1ef+Zz5wnCJlUX2Vzosv6BmKDScp8mH8dBloQy9pL/qAaW9eMMvtfXMRlsSGpOJDx1ubN/qZAwtFL6faFAi6EaLoKkM7uALUPdgT/zX6DOmcWXf2ULGHu+DY5iEbrnMiMR81bUUJf'
+
+

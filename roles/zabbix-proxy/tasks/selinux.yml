@@ -1,0 +1,10 @@
+---
+
+ - name: Desabilitando SELinux Temporariamente
+   selinux:
+     state: disabled
+
+ - name: Desabilitando SELinux Permanentemente
+   become: true
+   become_method: sudo
+   shell: setenforce 0

@@ -1,0 +1,42 @@
+---
+zabbix_proxy_server: 10.160.4.97
+zabbix_proxy_hostname: "{{ inventory_hostname }}"
+zabbix_proxy_port: 10051
+zabbix_proxy_server_port: 10051
+zabbix_proxy_mode: 0
+zabbix_proxy_logtype: file
+zabbix_proxy_logfile: /var/log/zabbix/zabbix_proxy.log
+zabbix_proxy_pidfile: /var/run/zabbix/zabbix_proxy.pid
+zabbix_proxy_dbname: /var/run/zabbix/zabbix_db
+zabbix_proxy_offlinebuffer: 1
+zabbix_proxy_startjavapollers: 5
+zabbix_proxy_javagateway: 127.0.0.1
+zabbix_proxy_javagatewayport: 10052
+zabbix_proxy_heartbeat: 60
+zabbix_proxy_configfrequency: 30
+zabbix_proxy_datasenderfrequency: 1
+zabbix_proxy_startpollers: 800
+zabbix_proxy_startpollersunreachable: 50
+zabbix_proxy_starttrappers: 50
+zabbix_proxy_startpingers: 5
+zabbix_proxy_startdiscoverers: 20
+zabbix_proxy_starthttppollers: 40
+zabbix_proxy_startvmwarecollectors: 20
+zabbix_proxy_vmwarecache: 32M
+zabbix_proxy_startdbsyncers: 60
+zabbix_proxy_cachesize: 512M
+zabbix_proxy_historycachesize: 32M
+zabbix_proxy_historyindexcachesize: 32M
+zabbix_proxy_timeout: 30
+zabbix_proxy_externalscripts: /zabbix_scripts/external_scripts
+zabbix_proxy_vmwaretimeout: 300
+
+#
+datafiles_path: /usr/share/doc/zabbix-proxy-sqlite3
+
+dependencias:
+        - fping
+        - OpenIPMI-libs
+        - net-snmp
+        - unixODBC
+        - libevent

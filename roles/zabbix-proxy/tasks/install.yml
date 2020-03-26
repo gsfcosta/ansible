@@ -1,0 +1,7 @@
+---
+  - name: Copiando arquivo de instalação
+    copy: src=zabbix-proxy-sqlite3-4.0.19-1.el{{ ansible_distribution_major_version }}.x86_64.rpm dest=/tmp/zabbix-proxy-sqlite3-4.0.19-1.el{{ ansible_distribution_major_version }}.x86_64.rpm
+
+  - name: Instalando Zabbix Proxy
+    shell: rpm -i /tmp/zabbix-proxy-sqlite3-4.0.19-1.el{{ ansible_distribution_major_version }}.x86_64.rpm
+
