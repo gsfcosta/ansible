@@ -163,9 +163,9 @@ INVENTORY_HOST="/etc/ansible/hosts"
 DEFAULT=1 #1 - SIM $0 - NÃO
 INVENTARIO="disabled" #automatic #manual #disabled
 STATUS="enabled" #enabled #disabled
-URL="http://35.247.252.248" #URL Zabbix
-USERNAME="svcacc_ansible"
-PASSWORD="sun123*compasso"
+URL="http://ip:port" #URL Zabbix
+USERNAME="username"
+PASSWORD="senha"
 ANSIBLE_HOSTS="cliente"
 ARQUIVO="/tmp/arquivo.csv"
 
