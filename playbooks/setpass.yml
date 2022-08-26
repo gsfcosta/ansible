@@ -1,0 +1,13 @@
+---
+
+- name: Alterar senha
+  hosts: "{{ destinos }}"
+  become: yes
+  become_method: sudo
+  tasks:
+
+    - name: set pass
+      user:
+        name: '{{ user_automation }}'
+        expire: -1
+        password: "{{ password_new }}"
