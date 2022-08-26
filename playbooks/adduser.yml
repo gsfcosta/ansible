@@ -1,0 +1,30 @@
+---
+
+- name: Adicionar grupo e usuário
+  hosts: hosts
+  become_method: sudo
+  become: true
+  tasks:
+
+  - name: Verificar e adicionar grupo 
+    group:
+      name: group
+      state: present
+
+  - name: Adicionar usuário
+    user:
+      name: username
+      shell: /bin/bash
+      groups: group
+      append: yes
+      expires: -1
+      password: 'hash'
+      state: present
+
+  - lineinfile:
+      path: /etc/sudoers
+      state: present
+      regexp: '^%group'
+      line: '%group ALL=(ALL) NOPASSWD: ALL'
+      validate: '/usr/sbin/visudo -cf %s'
+  
