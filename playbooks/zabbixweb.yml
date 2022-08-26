@@ -1,0 +1,34 @@
+---
+- name: Deploy
+  hosts: "{{ destinos }}"
+  tasks:
+  
+  - name: Pull docker image
+    docker_image:
+      name: zabbix/zabbix-web-nginx-mysql
+      state: present
+      tag: ubuntu-6.0.4
+
+  - name: Stop Docker container
+    docker_container:
+      name: "{{ ZBX_NAME }}"
+      state: absent
+
+  - name: Start container
+    docker_container:
+      name: "{{ ZBX_NAME }}"
+      state: started
+      image: zabbix/zabbix-web-nginx-mysql:ubuntu-6.0.4
+      ports:
+       - "5004:8443"
+      env:
+        DB_SERVER_HOST: "{{ DBHOST }}"
+        MYSQL_DATABASE: "{{ DBNAME }}"
+        MYSQL_USER: "{{ DBUSER }}"
+        MYSQL_PASSWORD: "{{ DBPASS }}"
+        ZBX_SERVER_HOST: "{{ ZBXSRV }}"
+        ZBX_SERVER_NAME: "{{ ZBXNAME }}"
+        ZBX_SERVER_PORT: "{{ ZBXPORT }}"
+      volumes:
+        - "/ssl/:/etc/ssl/nginx/"
+      restart_policy: always
