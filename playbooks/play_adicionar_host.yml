@@ -6,10 +6,10 @@
   - name: Criando macros no host teste10
     local_action:
         module: zabbix_hostmacro
-        server_url: http://172.17.27.23:8080
-        login_user: svcacc_ansible
-        login_password: sun123*compasso
-        host_name: teste10
+        server_url: http://ip:port
+        login_user: user
+        login_password: senha
+        host_name: hostname
         macro_name: PORT
-        macro_value: 162
+        macro_value: value
         state: present
