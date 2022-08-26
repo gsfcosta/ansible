@@ -1,7 +1,7 @@
 ---
 
 - name: Remover backups antigos
-  hosts: tb-b5-ambevzbxapp2
+  hosts: host
   tasks:
 
   - name: Listando backup antigos
