@@ -1,0 +1,15 @@
+--- 
+
+- name: Job para coletar crontab de servidores
+  hosts: "{{ destinos }}"
+  become_method: sudo
+  become: true
+  tasks:
+
+  - name: Listando Crontabs
+    shell: crontab -l > /tmp/crontab.txt
+    
+  - name: Copiando arquivo
+    fetch:
+      src: /tmp/crontab.txt
+      dest: /tmp/crontabs/{{ inventory_hostname }}_crontab.txt
