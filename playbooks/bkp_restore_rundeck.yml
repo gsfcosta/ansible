@@ -1,6 +1,6 @@
 ---
 - name: Build
-  hosts: tb-vprundeck1
+  hosts: rundeck
   tasks:
   
     - name: Copy backup
