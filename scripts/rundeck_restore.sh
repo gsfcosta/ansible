@@ -2,7 +2,7 @@
 export RD_URL="http://localhost:4440"
 export RD_URL="https://localhost:4443"
 export RD_TOKEN="iBa5V7c9QCedCnEV1ryGKammfhpwhJeF"
-export RD_BYPASS_URL="https://rundeck.edge.uol"
+export RD_BYPASS_URL="https://rundeck.domain"
 export RD_INSECURE_SSL="true"
 RUNDECK_BASE="/var/lib/rundeck"
 RUNDECK_CONF="/etc/rundeck"
