@@ -1,0 +1,86 @@
+---
+- name: Install Carbon Black Agent
+  hosts: "{{ destinos }}"
+  tasks:
+
+  - name: Check if exist's
+    stat:
+      path: /opt/carbonblack/psc
+    register: check
+
+  - name: Create DIR if not exist's
+    file:
+      path: /carbonblack_files
+      state: directory
+      mode: '0777'
+    when: check.stat.exists == false
+
+  - name: Create DIR for unpack if not exist's
+    file:
+      path: /carbonblack_files/unpacked
+      state: directory
+      mode: '0777'
+    when: check.stat.exists == false
+
+  - name: Copy file RHEL 6
+    copy:
+      src: "{{ playbook_dir }}/files/rhel/cb-psc-sensor-rhel-2.11.3.629089.tar"
+      dest: /carbonblack_files/cb-psc-sensor-rhel-2.11.3.629089.tar
+    when: check.stat.exists == false and (ansible_facts['distribution'] == "CentOS" or ansible_facts['distribution'] == "RedHat" or ansible_facts['distribution'] == "Oracle") and
+          (ansible_facts['distribution_major_version'] == "6")
+  
+  - name: Copy file RHEL 7 and 8
+    copy:
+      src: "{{ playbook_dir }}/files/rhel/cb-psc-sensor-rhel-2.13.1.933911.tar"
+      dest: /carbonblack_files/cb-psc-sensor-rhel-2.13.1.933911.tar
+    when: check.stat.exists == false and (ansible_facts['distribution'] == "CentOS" or ansible_facts['distribution'] == "RedHat" or ansible_facts['distribution'] == "Oracle") and
+          (ansible_facts['distribution_major_version'] == "7" or ansible_facts['distribution_major_version'] == "8")
+
+  - name: Copy file Ubuntu 16
+    copy:
+      src: "{{ playbook_dir }}/files/ubuntu/cb-psc-sensor-ubuntu-2.11.3.629089.tar"
+      dest: /carbonblack_files/cb-psc-sensor-ubuntu-2.11.3.629089.tar
+    when: check.stat.exists == false and (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] == "16")
+
+  - name: Copy file Ubuntu other's version
+    copy:
+      src: "{{ playbook_dir }}/files/ubuntu/cb-psc-sensor-ubuntu-2.13.1.933911.tar"
+      dest: /carbonblack_files/cb-psc-sensor-ubuntu-2.13.1.933911.tar
+    when: check.stat.exists == false and (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] == "18" or ansible_facts['distribution_major_version'] == "19" or ansible_facts['distribution_major_version'] == "20" or ansible_facts['distribution_major_version'] == "21") or
+    (ansible_facts['distribution'] == "Debian" and ansible_facts['distribution_major_version'] == "9" or ansible_facts['distribution_major_version'] == "10" or ansible_facts['distribution_major_version'] == "11")
+
+  - name: Unpack files RHEL 6
+    unarchive:
+      src: /carbonblack_files/cb-psc-sensor-rhel-2.11.3.629089.tar
+      dest: /carbonblack_files/unpacked
+      remote_src: yes
+    when: check.stat.exists == false and (ansible_facts['distribution'] == "CentOS" or ansible_facts['distribution'] == "RedHat" or ansible_facts['distribution'] == "Oracle") and
+          (ansible_facts['distribution_major_version'] == "6")
+
+  - name: Unpack files RHEL 7 and 8
+    unarchive:
+      src: /carbonblack_files/cb-psc-sensor-rhel-2.13.1.933911.tar
+      dest: /carbonblack_files/unpacked
+      remote_src: yes
+    when: check.stat.exists == false and (ansible_facts['distribution'] == "CentOS" or ansible_facts['distribution'] == "RedHat" or ansible_facts['distribution'] == "Oracle") and
+          (ansible_facts['distribution_major_version'] == "7" or ansible_facts['distribution_major_version'] == "8")  
+
+  - name: Unpack files Ubuntu 16
+    unarchive:
+      src: /carbonblack_files/cb-psc-sensor-ubuntu-2.11.3.629089.tar
+      dest: /carbonblack_files/unpacked
+      remote_src: yes
+    when: check.stat.exists == false and (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] == "16")
+
+  - name: Unpack files Ubuntu other's version
+    unarchive:
+      src: /carbonblack_files/cb-psc-sensor-ubuntu-2.13.1.933911.tar
+      dest: /carbonblack_files/unpacked
+      remote_src: yes
+    when: check.stat.exists == false and (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] == "18" or ansible_facts['distribution_major_version'] == "19" or ansible_facts['distribution_major_version'] == "20" or ansible_facts['distribution_major_version'] == "21") or
+    (ansible_facts['distribution'] == "Debian" and ansible_facts['distribution_major_version'] == "9" or ansible_facts['distribution_major_version'] == "10" or ansible_facts['distribution_major_version'] == "11")
+  
+  - name: Install Carbon Black
+    shell:
+      cmd: /carbonblack_files/unpacked/install.sh "{{ companycode }}"; if [ $? -eq 0 ]; then echo "Carbon Black instalado com sucesso"; else echo "Erro $? na instalação do Agent"; fi
+    when: check.stat.exists == false
