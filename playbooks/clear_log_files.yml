@@ -1,0 +1,19 @@
+---
+
+- name: Limpar logs container
+  hosts: "{{ destinos }}"
+  tasks:
+  
+  - name: Listando logs
+    find:
+      paths: /var/lib/docker/containers/
+      file_type: file
+      patterns: '*-json.log'
+      recurse: yes
+      size: 200m
+    register: arquivos
+
+  - name: Limpando logs
+    shell: echo > "{{ item.path }}"
+    with_items:
+        - "{{ arquivos.files }}"
