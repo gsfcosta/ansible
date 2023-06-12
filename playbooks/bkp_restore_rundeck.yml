@@ -1,0 +1,40 @@
+---
+- name: Build
+  hosts: tb-vprundeck1
+  tasks:
+  
+    - name: Copy backup
+      copy:
+        src: "{{ playbook_dir }}/backup.sh"
+        dest: "/tmp/"
+        mode: '0755'
+      tags: backup
+
+    - name: Backup
+      shell: "/tmp/backup.sh {{ funcao }}"
+      tags: backup
+      ignore_errors: yes
+      register: backupresult
+     
+    - name: Display var backup
+      debug:
+        var: backupresult
+      tags: backup
+        
+    - name: Copy
+      copy:
+        src: "{{ playbook_dir }}/restore.sh"
+        dest: "/tmp/"
+        mode: '0755'
+      tags: restore
+    
+    - name: Restore Project
+      shell: "/tmp/restore.sh {{ funcao }} {{ restore_base }} {{ data_dst }} {{ project_dst }}"
+      tags: restore
+      ignore_errors: yes
+      register: restoreresult
+    
+    - name: Display var restore
+      debug:
+        var: restoreresult
+      tags: restore
