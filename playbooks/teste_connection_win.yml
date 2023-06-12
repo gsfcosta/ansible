@@ -1,0 +1,11 @@
+---
+- name: Teste connection
+  hosts: "{{ destinos }}"
+  tasks:
+
+  - name: Test CB connect
+    ignore_errors: yes
+    win_wait_for:
+      host: defense-prod05.conferdeploy.net
+      port: 443
+      timeout: 15

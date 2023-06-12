@@ -1,0 +1,63 @@
+---
+- name: Install Carbon Black Agent
+  hosts: "{{ destinos }}"
+  tasks:
+
+  # - name: Check if exist's
+  #   stat:
+  #     path: /opt/carbonblack/psc
+  #   register: check
+
+  - name: Create DIR if not exist's
+    file:
+      path: /carbonblack_files
+      state: directory
+      mode: '0777'
+    # when: check.stat.exists == false
+
+  - name: Create DIR for unpack if not exist's
+    file:
+      path: /carbonblack_files/unpacked
+      state: directory
+      mode: '0777'
+    # when: check.stat.exists == false
+
+  - name: Copy file RHEL 6
+    copy:
+      src: "{{ playbook_dir }}/files/rhel/cb-psc-sensor-rhel-2.11.3.629089.tar"
+      dest: /carbonblack_files/cb-psc-sensor-rhel-2.11.3.629089.tar
+    when: ansible_facts['distribution_major_version'] == "6"
+  
+  - name: Copy file RHEL 7 and 8
+    copy:
+      src: "{{ playbook_dir }}/files/rhel/cb-psc-sensor-rhel-2.14.1.1646819.tar"
+      dest: /carbonblack_files/cb-psc-sensor-rhel-2.14.1.1646819.tar
+    when: ansible_facts['distribution_major_version'] == "7" or ansible_facts['distribution_major_version'] == "8"
+
+  - name: Unpack files RHEL 6
+    unarchive:
+      src: /carbonblack_files/cb-psc-sensor-rhel-2.11.3.629089.tar
+      dest: /carbonblack_files/unpacked
+      remote_src: yes
+    when: ansible_facts['distribution_major_version'] == "6"
+
+  - name: Unpack files RHEL 7 and 8
+    unarchive:
+      src: /carbonblack_files/cb-psc-sensor-rhel-2.14.1.1646819.tar
+      dest: /carbonblack_files/unpacked
+      remote_src: yes
+    when: ansible_facts['distribution_major_version'] == "7" or ansible_facts['distribution_major_version'] == "8"  
+
+  - name: Install Carbon Black Proxy
+    shell:
+      cmd: /carbonblack_files/unpacked/install.sh "{{ companycode }}"
+    
+  - name: Start cbagentd RHEL 6
+    shell:
+      cmd: /etc/init.d/cbagentd restart
+    when: ansible_facts['distribution_major_version'] == "6"
+  
+  - name: Start cbagentd RHEL 7 and 8
+    shell:
+      cmd: systemctl start cbagentd
+    when: ansible_facts['distribution_major_version'] == "7" or ansible_facts['distribution_major_version'] == "8"

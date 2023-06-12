@@ -1,0 +1,15 @@
+---
+- name: ADD User
+  hosts: "{{ destinos }}"
+  tasks:
+
+  - name: Ensure user bob is present
+    win_user:
+      name: "{{ user }}"
+      password: "{{ password }}"
+      state: present
+      password_never_expires: true
+      password_expired: false
+      user_cannot_change_password: true
+      groups:
+        - Administrators

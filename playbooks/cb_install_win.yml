@@ -1,0 +1,35 @@
+---
+- name: Install C
+  hosts: "{{ destinos }}"
+  tasks:
+
+  - name: Copy file install
+    win_copy:
+        src: "{{ playbook_dir }}/files/installer_vista_win7_win8-64-3.9.1.2464.msi"
+        dest: C:\ProgramData\installer_vista_win7_win8-64-3.9.1.2464.msi
+
+  - name: Test net
+    ignore_errors: yes
+    win_wait_for:
+      host: defense-prod05.conferdeploy.net
+      port: 443
+      timeout: 15
+    register: outputnet
+    
+  - name: Executar Script
+    win_command: 'msiexec /q /i C:\ProgramData\installer_vista_win7_win8-64-3.9.1.2464.msi /L* log.txt COMPANY_CODE=<CODE> CLI_USERS=S-1-5-32-544 CURL_CRL_CHECK=0'
+    when: outputnet.failed == false
+    
+  - name: Test proxy 
+    ignore_errors: yes
+    win_wait_for:
+      host: 10.10.10.10
+      port: 3128
+      timeout: 15
+    register: outputnetproxy
+
+  - name: Executar Script
+    win_shell: 'msiexec /q /i installer_vista_win7_win8-64-3.9.1.2464.msi /L* log.txt COMPANY_CODE=<CODE> PROXY_SERVER=10.10.10.10:3128 CLI_USERS=S-1-5-32-544 CURL_CRL_CHECK=0'
+    args:
+      chdir: C:\ProgramData
+    when: outputnet.failed == true and outputnetproxy.failed == false
