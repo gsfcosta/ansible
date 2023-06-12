@@ -1,0 +1,12 @@
+--- 
+
+- name: Job para copiar arquivos
+  hosts: "{{ hostsnames }}"
+  become_method: sudo
+  become: true
+  tasks:
+
+  - name: Copiando arquivo
+    copy:
+      src: "{{ origem }}"
+      dest: "{{ destino }}"
