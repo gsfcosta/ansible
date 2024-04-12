@@ -73,7 +73,7 @@
     - name: Configure Zabbix Agent file - With hostname
       community.windows.win_lineinfile:
         path: "{{ findfilename.files[0].path }}"
-        regex: '^ServerActive=192.168.5.55r'
+        regex: '^ServerActive=192.168.5.55'
         line: 'ServerActive=zabbix.ouribank.com'
         backrefs: yes
       when: outputnet.failed == false and filechangedactive.changed == false
@@ -89,11 +89,11 @@
         msg: "Servidor {{ inventory_hostname }} parcialmente alterado"
       when: filechangedserver.changed == true or filechangedactive.changed == true
       
-    - name: Set service Zabbix Agent startup mode to auto and ensure it is started
-      win_service:
-        name: Zabbix Agent
-        state: restarted
-      register: result
+    # - name: Set service Zabbix Agent startup mode to auto and ensure it is started
+    #   win_service:
+    #     name: Zabbix Agent
+    #     state: restarted
+    #   register: result
 
-    - debug: msg="{{result}}"
+    # - debug: msg="{{result}}"
     # - debug: msg="{{outputnet}}"
