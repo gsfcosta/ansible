@@ -50,37 +50,50 @@
         line: 'Server=zabbix.ouribank.com'
         backrefs: yes
       when: outputnet.failed == false
-      register: filechanged
+      register: filechangedserver
 
-    - name: Display changed file
+    - name: Configure Zabbix Agent file - With hostname
+      community.windows.win_lineinfile:
+        path: "{{ findfilename.files[0].path }}"
+        regex: '^ServerActive=zabbix.ourinvest.com.br'
+        line: 'ServerActive=zabbix.ouribank.com'
+        backrefs: yes
+      when: outputnet.failed == false
+      register: filechangedactive
+
+    - name: Configure Zabbix Agent file - With hostname
+      community.windows.win_lineinfile:
+        path: "{{ findfilename.files[0].path }}"
+        regex: '^Server=192.168.5.55'
+        line: 'Server=zabbix.ouribank.com'
+        backrefs: yes
+      when: outputnet.failed == false and filechangedserver.changed == false
+      register: filechangedserver
+
+    - name: Configure Zabbix Agent file - With hostname
+      community.windows.win_lineinfile:
+        path: "{{ findfilename.files[0].path }}"
+        regex: '^ServerActive=192.168.5.55r'
+        line: 'ServerActive=zabbix.ouribank.com'
+        backrefs: yes
+      when: outputnet.failed == false and filechangedactive.changed == false
+      register: filechangedactive
+
+    - name: Display Result
       debug:
-        msg: "{{ filechanged }}"
-      # when: outputnet.failed == false
-    # - name: Configure Zabbix Agent file - With IP Address
-    #   community.windows.win_lineinfile:
-    #     path: C:\Zabbix\zabbix_agent2.conf
-    #     regex: '^Server=192.168.5.55'
-    #     line: 'Server=zabbix.ouribank.com'
-    #   when: outputnet.failed == false and filechanged.
+        msg: "Servidor {{ inventory_hostname }} alterado com sucesso"
+      when: filechangedserver.changed == true and filechangedactive.changed == true
 
-    # - name: Configure Zabbix Agent file - ServerActive
-    #   community.windows.win_lineinfile:
-    #     path: C:\Zabbix Agent 2\zabbix_agent2.conf
-    #     regex: '^ServerActive=zabbix.ourinvest.com.br'
-    #     line: 'ServerActive=zabbix.ouribank.com'
-    #   when: outputnet.failed == false
+    - name: Display Result
+      debug:
+        msg: "Servidor {{ inventory_hostname }} parcialmente alterado"
+      when: filechangedserver.changed == true or filechangedactive.changed == true
+      
+    - name: Set service Zabbix Agent startup mode to auto and ensure it is started
+      win_service:
+        name: Zabbix Agent
+        state: restarted
+      register: result
 
-    # - name: Configure Zabbix Agent file - ServerActive - With IP Address
-    #   community.windows.win_lineinfile:
-    #     path: C:\Zabbix Agent 2\zabbix_agent2.conf
-    #     regex: '^ServerActive=zabbix.ourinvest.com.br'
-    #     line: 'ServerActive=192.168.5.55'
-    #   when: outputnet.failed == true
-
-    # - name: Set service Zabbix Agent startup mode to auto and ensure it is started
-    #   win_service:
-    #     name: Zabbix Agent 2 #ssh-agent
-    #     state: started
-
-    # - debug: msg="{{result}}"
+    - debug: msg="{{result}}"
     # - debug: msg="{{outputnet}}"
