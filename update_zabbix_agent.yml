@@ -48,6 +48,7 @@
         path: "{{ findfilename.files[0].path }}"
         regex: '^Server=zabbix.ourinvest.com.br'
         line: 'Server=zabbix.ouribank.com'
+        state: present
       when: outputnet.failed == false
       register: filechanged
 
