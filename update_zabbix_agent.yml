@@ -40,7 +40,7 @@
 
     - name: Display File name
       debug:
-        msg: "{{ fileset | json_query('files[].path') }}"
+        msg: "{{ fileset.files[0].filename }}"
       when: outputnet.failed == false
 
     # - name: Configure Zabbix Agent file - With hostname
