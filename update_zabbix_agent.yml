@@ -45,7 +45,7 @@
 
     - name: Configure Zabbix Agent file - With hostname
       community.windows.win_lineinfile:
-        path: "{{ fileset.files[0].path }}"
+        path: "{{ findfilename.files[0].path }}"
         regex: '^Server=zabbix.ourinvest.com.br'
         line: 'Server=zabbix.ouribank.com'
       when: outputnet.failed == false
