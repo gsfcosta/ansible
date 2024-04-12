@@ -19,7 +19,7 @@
       ignore_errors: yes
       win_wait_for:
         host: zabbix.ouribank.com
-        port: 443
+        port: 10051
         timeout: 5
       register: outputnet
 
@@ -53,7 +53,7 @@
 
     - name: Display changed file
       debug:
-        msg: filechanged
+        msg: {{ filechanged }}
       # when: outputnet.failed == false
     # - name: Configure Zabbix Agent file - With IP Address
     #   community.windows.win_lineinfile:
