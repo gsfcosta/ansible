@@ -36,27 +36,31 @@
         patterns: [ 'zabbix_agentd.conf' ]
         recurse: yes
       when: outputnet.failed == false
-      register: fileset
+      register: findfilename
 
     - name: Display File name
       debug:
-        msg: "{{ fileset.files[0].path }}"
+        msg: "{{ findfilename.files[0].path }}"
       when: outputnet.failed == false
 
-    # - name: Configure Zabbix Agent file - With hostname
-    #   community.windows.win_lineinfile:
-    #     path: C:\zabbix\conf\zabbix_agent2.conf
-    #     regex: '^Server=zabbix.ourinvest.com.br'
-    #     line: 'Server=zabbix.ouribank.com'
-    #   when: outputnet.failed == false
-    #   register: fileset
+    - name: Configure Zabbix Agent file - With hostname
+      community.windows.win_lineinfile:
+        path: "{{ fileset.files[0].path }}"
+        regex: '^Server=zabbix.ourinvest.com.br'
+        line: 'Server=zabbix.ouribank.com'
+      when: outputnet.failed == false
+      register: filechanged
 
+    - name: Display changed file
+      debug:
+        msg: filechanged
+      # when: outputnet.failed == false
     # - name: Configure Zabbix Agent file - With IP Address
     #   community.windows.win_lineinfile:
     #     path: C:\Zabbix\zabbix_agent2.conf
     #     regex: '^Server=192.168.5.55'
     #     line: 'Server=zabbix.ouribank.com'
-    #   when: outputnet.failed == true
+    #   when: outputnet.failed == false and filechanged.
 
     # - name: Configure Zabbix Agent file - ServerActive
     #   community.windows.win_lineinfile:
