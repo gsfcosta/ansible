@@ -18,8 +18,8 @@
     - name: Test Name Resolution to Zabbix Server
       ignore_errors: yes
       win_wait_for:
-        host: zabbix.ouribank.com
-        port: 10051
+        host: ouribank.com
+        port: 443
         timeout: 5
       register: outputnet
 
