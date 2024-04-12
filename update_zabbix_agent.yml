@@ -68,7 +68,7 @@
         line: 'Server=zabbix.ouribank.com'
         backrefs: yes
       when: outputnet.failed == false and filechangedserver.changed == false
-      register: filechangedserver
+      register: filechangedserver2
 
     - name: Configure Zabbix Agent file - With hostname
       community.windows.win_lineinfile:
@@ -77,18 +77,27 @@
         line: 'ServerActive=zabbix.ouribank.com'
         backrefs: yes
       when: outputnet.failed == false and filechangedactive.changed == false
-      register: filechangedactive
+      register: filechangedactive2
 
     - name: Display Result
       debug:
         msg: "Servidor {{ inventory_hostname }} alterado com sucesso"
-      when: filechangedserver.changed == true and filechangedactive.changed == true
+      when: outputnet.failed == false and filechangedserver.changed == true and filechangedactive.changed == true
+
+    - name: Display Result
+      debug:
+        msg: "Servidor {{ inventory_hostname }} alterado com sucesso"
+      when: outputnet.failed == false and filechangedserver2.changed == true and filechangedactive2.changed == true
 
     - name: Display Result
       debug:
         msg: "Servidor {{ inventory_hostname }} parcialmente alterado"
-      when: filechangedserver.changed == true or filechangedactive.changed == true
-      
+      when: (outputnet.failed == false and filechangedserver.changed == true and filechangedactive.changed == false) or (outputnet.failed == false and filechangedactive.changed == true and filechangedserver.changed == false)
+
+    - name: Display Result
+      debug:
+        msg: "Servidor {{ inventory_hostname }} parcialmente alterado"
+      when: (outputnet.failed == false and filechangedserver2.changed == true and filechangedactive2.changed == false) or (outputnet.failed == false and filechangedactive2.changed == true and filechangedserver2.changed == false)
     # - name: Set service Zabbix Agent startup mode to auto and ensure it is started
     #   win_service:
     #     name: Zabbix Agent
