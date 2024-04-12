@@ -53,7 +53,7 @@
 
     - name: Display changed file
       debug:
-        msg: {{ filechanged }}
+        msg: "{{ filechanged }}"
       # when: outputnet.failed == false
     # - name: Configure Zabbix Agent file - With IP Address
     #   community.windows.win_lineinfile:
